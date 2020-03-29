@@ -1,5 +1,5 @@
 import React from 'react'
-
+import image from './images.png';
 
 class movieItem extends React.Component {
   constructor(){
@@ -21,13 +21,16 @@ return (
   })
   );
 }
-    
+const imgFile =
+movie.backdrop_path || movie.poster_path
+  ? `https://image.tmdb.org/t/p/w500${movie.backdrop_path ||
+      movie.poster_path}`
+  : image; 
 
   return ( <div className="card">
       <img
   className="card-img-top"
-  src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path ||
-    movie.poster_path}`}
+  src={imgFile}
   alt=""
 />
   <div className="card-body">
@@ -38,14 +41,14 @@ return (
        getBtnClick(false);
        removeMovieFromWillWatch(movie)}}>
       Remove
-     </button>) : (<button type="button" className="btn btn-secondary" onClick={() =>{
+     </button>) : (<button type="button" className="btn btn-danger" onClick={() =>{
       getBtnClick(true);
       addMovieToWillWatch(movie);}}>
        Will Watch
      </button>)}
    </div>
-   <button onClick={removeMovie.bind(null, this.props.movie)}>
-     Delete movie</button>
+   <button className="btn btn-dark" onClick={removeMovie.bind(null, this.props.movie)}>
+     Delete</button>
  </div>
 </div>
 )}

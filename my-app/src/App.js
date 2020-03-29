@@ -5,7 +5,7 @@ import './App.css';
 import MovieItem from './components/movieItem'
 import {API_URL, API_KEY_3} from "./utils/api"
 import MovieTabs from "./components/MovieTabs"
-import PlussPage from "./components/plussPage"
+import Pagination from "./components/Pagination"
 
 
 
@@ -16,38 +16,38 @@ class App extends React.Component{
       movies:[],
       movieWillWatch:[],
       sort_by:"popularity.desc",
-      pages:1
+      currentPage: 1,
+      totalPages: 0,
+      isLoading: false,
       };
   console.log("constructor")
     }
 
-    componentDidMount (){
-      console.log("didMount")
-fetch(`${API_URL}/discover/movie?page=${this.state.pages}&api_key=${API_KEY_3}&sort_by=${this.state.sort_by}`).then((response) => {
-console.log("then")
-return response.json()
-}).then((data) => {
-console.log("data", data)
-this.setState({
-  movies: data.results
-})
-});
+    componentDidMount() {
+      this.setState({ isLoading: true });
+      this.getMovies();
+    }
+  
+    componentDidUpdate(prevProps, prevState) {
+      return prevState.sortBy !== this.state.sort_by ||
+        prevState.currentPage !== this.state.currentPage
+        ? this.getMovies()
+        : false;
     }
 
-    componentDidUpdate(prevProps, prevState) {
-      if(prevState.sort_by !== this.state.sort_by){
-        fetch(`${API_URL}/discover/movie?page=${this.state.pages}&api_key=${API_KEY_3}&sort_by=${this.state.sort_by}`).then((response) => {
-          console.log("then")
-          return response.json()
-          }).then((data) => {
-          console.log("data", data)
-          this.setState({
-            movies: data.results
-          })
-          });
-      
-      }
-          }
+          getMovies = () => {
+            fetch(
+              `${API_URL}/discover/movie?api_key=${API_KEY_3}&sort_by=${this.state.sort_by}&page=${this.state.currentPage}`
+            )
+              .then(response => response.json())
+              .then(data => {
+                this.setState({
+                  movies: data.results,
+                  isLoading: false,
+                  totalPages: data.total_pages,
+                });
+              });
+          }; 
         
 
     removeMovie = movie => {
@@ -85,20 +85,25 @@ this.setState({
 
     updateSortBy = value => {
       this.setState({
-        sort_by: value
+        sort_by: value,
+        currentPage: 1,
       })
     }
 
-    updatePlussPage = value => {
-      this.setState({
-        pages: value  
-      })
-    }
+    changeCurrentPage = value => {
+      if (value > 0) {
+        this.setState({
+          currentPage: value,
+        });
+      }
+    };
 
    
    
   render(){
-    console.log(this);
+    if (this.state.isLoading) {
+      return <p>Loading ...</p>;
+    }
     return(
       <div className="container">
         <div className="row">
@@ -137,8 +142,13 @@ this.setState({
             </ul>
           </div>
         </div>
-        <PlussPage pages={this.state.pages}
-          updatePlussPage={this.updatePlussPage}/>
+        <div className="row justify-content-center">
+              <Pagination
+                currentPage={this.state.currentPage}
+                totalPages={this.state.totalPages}
+                changeCurrentPage={this.changeCurrentPage}
+              />
+            </div>
       </div>
     );
   }
