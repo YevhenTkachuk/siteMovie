@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "bootstrap": "^4.4.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-scripts": "3.4.0"
@@ -16,8 +17,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "rename-index": "node -e \"require('fs').rename('./build/index.html', './build/200.html', (err) => { console.log(err ? err : 'File renamed!') })\"",
-      "predeploy": "npm run build && npm run rename-index",
-      "deploy": "surge --project ./build --domain YOUR-DOMAIN"
+    "predeploy": "npm run build && npm run rename-index",
+    "deploy": "surge --project ./build --domain YOUR-DOMAIN"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -33,9 +34,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "gh-pages": "^2.2.0"
-  },
-  "homepage": "https://yevhentkachuk.github.io/siteMovie/"
+  }
 }
